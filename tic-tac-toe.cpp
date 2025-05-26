@@ -20,7 +20,7 @@ bool checkWin(const vector<vector<char>>& board, char player) {
         if (board[i][0] == player && board[i][1] == player && board[i][2] == player)
             return true;
     }
-   
+
     if (board[0][0] == player && board[1][1] == player && board[2][2] == player)
         return true; 
     return false;
@@ -48,7 +48,9 @@ int main() {
         cin >> row >> col;
 
         // Validate input
-        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE || board[row][col] != ' ') {
+        if (cin.fail() || row < 0 || row >= SIZE || col < 0 || col >= SIZE || board[row][col] != ' ') {
+            cin.clear();
+            cin.ignore(10000,'\n');
             cout << "Invalid move. Try again." << endl;
             turn--; 
             continue;
