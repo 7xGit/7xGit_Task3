@@ -7,6 +7,7 @@ const int SIZE = 3;
 
 void printBoard(const vector<vector<char>>& board) {
     for (int i = 0; i < SIZE; i++) {
+        cout << "  ";
         for (int j = 0; j < SIZE; j++) {
             cout << board[i][j] << " ";
         }
@@ -20,16 +21,24 @@ bool checkWin(const vector<vector<char>>& board, char player) {
         if (board[i][0] == player && board[i][1] == player && board[i][2] == player)
             return true;
     }
+    for (int j = 0; j < SIZE; j++) {
+        if (board[0][j] == player && board[1][j] == player && board[2][j] == player)
+            return true;
+    }
    
     if (board[0][0] == player && board[1][1] == player && board[2][2] == player)
         return true; 
+    
+
+    if (board[0][2] == player && board[1][1] == player && board[2][0] == player)
+        return true;
     return false;
 }
 
 bool checkDraw(const vector<vector<char>>& board) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
-            if (board[i][j] == ' ') {
+            if (board[i][j] == '_') {
                 return false; 
             }
         }
@@ -38,17 +47,22 @@ bool checkDraw(const vector<vector<char>>& board) {
 }
 
 int main() {
-    vector<vector<char>> board(SIZE, vector<char>(SIZE, ' '));
+    vector<vector<char>> board(SIZE, vector<char>(SIZE, '_'));
     char currentPlayer = 'X';
     int row, col;
 
     for (int turn = 0; turn < SIZE * SIZE; turn++) { 
         printBoard(board);
-        cout << "Player " << currentPlayer << ", enter your move (row and column): ";
-        cin >> row >> col;
-
+        cout << "Player " << currentPlayer << ", enter your move (row and column): ";      
+        if (!(cin >> row >> col)) {
+            cout << "Invalid input. Please enter numbers.\n";
+            cin.clear(); // Clear error state
+            cin.ignore(10000, '\n'); // Discard bad input
+            turn--; 
+            continue;
+        }
         // Validate input
-        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE || board[row][col] != ' ') {
+        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE || board[row][col] != '_') {
             cout << "Invalid move. Try again." << endl;
             turn--; 
             continue;
@@ -60,14 +74,14 @@ int main() {
         if (checkWin(board, currentPlayer)) {
             printBoard(board);
             cout << "Player " << currentPlayer << " wins!" << endl;
-            return 1;
+            return 0;
         }
 
     
         if (checkDraw(board)) {
             printBoard(board);
             cout << "It's a draw!" << endl;
-            return 1;
+            return 0;
         }
 
         
